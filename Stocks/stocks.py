@@ -1,12 +1,10 @@
 import urllib.request
 import json
 import datetime
+from symbol import symbol
 
 
-now = datetime.datetime.now()
-
-
-def getPriceHistory(a, months):
+def getPriceHistory(a, now):
     url = "https://www.alphavantage.co/query?"
     function = "function=TIME_SERIES_DAILY"
     symbol = "symbol=" + a
@@ -15,32 +13,31 @@ def getPriceHistory(a, months):
     fullURL = url + function + "&" + symbol + "&" + interval + "&" + apikey
     resp = urllib.request.urlopen(fullURL)
     result = json.loads(resp.read())
-    graph = []
-    stringYear = str(int(now.year) - (months//12))
-    stringMonth = now.month - months
-    while stringMonth > 1:
-        stringMonth += 12
-    stringMonth = str(stringMonth)
-    stringDate = stringYear + "-" + stringMonth + "-" + "28"
-    for x in range((int(now.year) * 12 + int(now.month)) - months):
-        graph.append("Time Series (Daily)", result[stringDate])
+    datasetHigh = []
+    datasetLow = []
+    for x in range(now.day):
+        day = str(int(now.day) - x)
+        if 10 > int(now.day) - x:
+            day = "0" + day
+        date = str(now.year) + "-" + str(now.month) + "-" + day
+        if date in result['Time Series (Daily)']:
+            datasetHigh.append(date)
+            datasetHigh.append(result['Time Series (Daily)'][date]['2. high'])
+            datasetLow.append(date)
+            datasetLow.append(result['Time Series (Daily)'][date]['3. low'])
+
+    print(datasetHigh)
+    print('')
+    print(datasetLow)
 
 
 def ask():
-    print("Which stock would you like to check? (By Symbol)")
+    now = datetime.datetime.now()
+    print("Which stock would you like to check?")
     a = input()
+    stock = symbol(a)
     print("")
-    print("How long ago would you like to browse? (In Months) (Anytime After 01/01/2000)")
-    months = int(input())
-    totalMonths = (int(now.year) * 12) + int(now.month)
-    subtractedMonths = totalMonths - months
-    pastDateM = int(subtractedMonths) % 12
-    if pastDateM == 0:
-        pastDateM = 12
-    pastDateY = int(subtractedMonths//12)
-    b = str(pastDateM) + "/" + str(now.day) + "/" + str(pastDateY)
-    print("")
-    print(getPriceHistory(a, months))
+    getPriceHistory(stock, now)
 
 
 print(ask())
