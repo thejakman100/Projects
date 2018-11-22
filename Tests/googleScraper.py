@@ -11,18 +11,23 @@ def symbol(a):
     html2 = requests.get(html, headers=headers)
     soup = BeautifulSoup(html2.text, 'html.parser')
     results = soup.find_all('span', attrs={'class': 'HfMth'})
-    print(results[0].text)
-    a = soup.find('span', attrs={'class': 'HfMth'}).text
+    if len(results) == 0:
+        return False
+    if 'NYSE: ' in results[0].text is False:
+        return False
+    if 'NASDAQ: ' in results[0].text is False:
+        return False
+    z = results[0].text
     exchange = []
     subtract = 8
     nyseQuestion = False
     nyse = ['N', 'Y', 'S', 'E']
-    for x in range(len(a)):
-        exchange.append(a[x])
+    for x in range(len(z)):
+        exchange.append(z[x])
         if exchange == nyse:
             nyseQuestion = True
             break
     if nyseQuestion is True:
         subtract = 6
-    b = soup.find('span', attrs={'class': 'HfMth'}).text[subtract:13]
+    b = results[0].text[subtract:13]
     return b
