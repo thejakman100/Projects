@@ -1,5 +1,6 @@
 import urllib.request
 import json
+from searchResults import searchResults
 
 
 def symbol2(a):
@@ -44,17 +45,28 @@ def symbol2(a):
         data = json.loads(resp.read())
     stockData = data['bestMatches']
     print(" ")
-    for x in range(len(stockData)):
-        print(str(x + 1) + "." + "Company Name: " + stockData[x]["2. name"])
-        print("  " + "Symbol:       " + stockData[x]["1. symbol"])
-        print("  " + "Region:       " + stockData[x]["4. region"])
-        print(" ")
-    print("Please from the stocks above.")
+    correctResults = searchResults(stockData)
+    test = correctResults[0]
+    ints = correctResults[1]
+    info = correctResults[2]
+    skip = 0
+    newCounter = 0
+    for x in range(len(test)):
+        if test[x] == 0:
+            skip += 1
+        else:
+            newCounter += 1
+            print(str(x + 1 - skip) + "." + "Company Name: " + stockData[x]["2. name"])
+            print("  " + "Symbol:       " + stockData[x]["1. symbol"])
+            print("  " + "Region:       " + stockData[x]["4. region"])
+            print(" ")
+    print("Please choose from the stocks above.")
     choose = int(input())
-    while (choose - 1) < 0 or (choose - 1) > len(stockData):
+    while (choose - 1) < 0 or (choose) > newCounter:
         print(" ")
         print("Please type a valid number index.")
-        choose = input()
-    choice = stockData[choose-1]["1. symbol"]
-    name = stockData[x]["2. name"]
-    return choice, name
+        choose = int(input())
+    choice = stockData[ints[choose-1]]["1. symbol"]
+    name = stockData[ints[choose-1]]["2. name"]
+    realChoice = info[choose-1]
+    return choice, name, realChoice

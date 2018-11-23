@@ -12,7 +12,7 @@ def graph(data):
         lows[x] = float(lows[x])
     days = masterList[2]
 
-    word = masterList[4]
+    word = masterList[5]
 
     plt.plot(days, lows, color="blue")
     plt.plot(days, highs, color="red")

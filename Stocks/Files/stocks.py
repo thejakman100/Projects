@@ -7,15 +7,9 @@ from graph import graph
 
 def getPriceHistory(stockAndName, now):
     a = stockAndName[0]
+    print(a)
     stockName = stockAndName[1]
-    url = "https://www.alphavantage.co/query?"
-    function = "function=TIME_SERIES_DAILY"
-    symbol1 = "symbol=" + a
-    interval = "interval=1min"
-    apikey = "apikey=MINCN67P0HGU1H6Q"
-    fullURL = url + function + "&" + symbol1 + "&" + interval + "&" + apikey
-    resp = urllib.request.urlopen(fullURL)
-    result = json.loads(resp.read())
+    stockInfo = stockAndName[2]
     datasetHigh = []
     datasetLow = []
     dataDays = []
@@ -25,11 +19,11 @@ def getPriceHistory(stockAndName, now):
         if 10 > int(now.day) - x:
             day = "0" + day
         date = str(now.year) + "-" + str(now.month) + "-" + day
-        if date in result['Time Series (Daily)']:
-            datasetHigh.append(result['Time Series (Daily)'][date]['2. high'])
-            datasetLow.append(result['Time Series (Daily)'][date]['3. low'])
+        if date in stockInfo['Time Series (Daily)']:
+            datasetHigh.append(stockInfo['Time Series (Daily)'][date]['2. high'])
+            datasetLow.append(stockInfo['Time Series (Daily)'][date]['3. low'])
             dataDays.append(dayint)
-    data = [datasetHigh, datasetLow, dataDays, now.month, stockName]
+    data = [datasetHigh, datasetLow, dataDays, now.month, stockName, a]
     return data
 
 
