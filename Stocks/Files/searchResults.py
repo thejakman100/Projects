@@ -1,9 +1,14 @@
 import urllib.request
 import json
 
+# This code takes the keyword from symbol2.symbol2() and checks which stock results
+# have actual values assigned to them. The code then sends the list of usable
+# stocks back with information on how to display the stocks in symbol2.symbol2() and
+# also returns the save data of all the usable stocks.
+
 
 def searchResults(stockData):
-
+    # Lines 12 -19 creates the initial link to start ruling out stocks.
     url = "https://www.alphavantage.co/query?"
     function = "function=TIME_SERIES_DAILY"
     interval = "interval=1min"
@@ -12,9 +17,13 @@ def searchResults(stockData):
     a = " "
     symbol1 = "symbol=" + a
     fullURL = url + function + "&" + symbol1 + "&" + interval + "&" + apikey
+    # Lines 21 - 23 Creates variables that will collectivly keep track of which stocks work.
     counter = 0
     track = []
     info = []
+    # The remaining lines below goes through 4 of the top stock results and decides
+    # Which ones have values. It then keeps track of the index in which the stock
+    # information will be stored in and sends that information back to symbol2.symbol2().
     for x in range(len(stockData)):
         if counter == 4:
             break
